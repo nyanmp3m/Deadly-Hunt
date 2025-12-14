@@ -3,12 +3,12 @@ import random
 
 
 width_user, height_user = arcade.get_display_size()
-images = ["background.png", "background2.png", "background3.png", "background4.png"]
+images = ["background1.jpg", "background2.jpg"]
 background = random.choice(images)
 
 class DeadlyHunt(arcade.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True, fullscreen=False)
+        super().__init__(width, height, title, resizable=True, fullscreen=True)
         self.background = arcade.load_texture(f"images/{background}")
 
     def on_draw(self):
