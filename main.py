@@ -3,6 +3,7 @@ import time
 
 width_user, height_user = arcade.get_display_size()
 
+# Main window class
 
 class MainWindow(arcade.Window):
     def __init__(self, width, height, title):
