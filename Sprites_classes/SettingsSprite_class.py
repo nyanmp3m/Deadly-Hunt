@@ -13,5 +13,5 @@ class SettingsSprite(arcade.Sprite):
         self.idle_texture = arcade.load_texture("Pictures/SettingsSprite_picture.png")
         self.texture = self.idle_texture
 
-        self.center_x = width_user // 2
-        self.center_y = height_user // 2
+        self.center_x = 100
+        self.center_y = 150

@@ -1,5 +1,6 @@
 import arcade
 
 
-class SettingsWindow(arcade.View):
-    def
+class SettingsWindow(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
