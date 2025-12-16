@@ -1,12 +1,16 @@
 import arcade
+import time
 
 width_user, height_user = arcade.get_display_size()
 
+# Main window class
 
 class MainWindow(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title, resizable=False, fullscreen=True)
-        self.background_color = arcade.color.TEA_GREEN
+        self.background_color = arcade.color.RED
+        time.sleep(3)
+        self.background_color = arcade.color.GOLD
 
     def setup(self):
         pass
