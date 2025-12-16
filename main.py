@@ -1,3 +1,4 @@
+from Sprites_classes.SettingsSprite_class import SettingsSprite
 import arcade
 
 width_user, height_user = arcade.get_display_size()
@@ -5,14 +6,25 @@ width_user, height_user = arcade.get_display_size()
 
 class MainWindow(arcade.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=False, fullscreen=True)
+        super().__init__(width, height, title, resizable=False, fullscreen=False)
         self.background_color = arcade.color.TEA_GREEN
+        self.settings_sprite_list = arcade.SpriteList()
 
     def setup(self):
         pass
 
     def on_draw(self):
+        setting = SettingsSprite()
+        self.settings_sprite_list.append(setting)
+
         self.clear()
+        self.settings_sprite_list.draw()
+
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
+
+
 
 
 def main():
