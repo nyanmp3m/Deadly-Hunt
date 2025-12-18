@@ -1,20 +1,22 @@
 import arcade
 import random
 
-from pyglet.event import EVENT_HANDLE_STATE
-
 from Sprites_classes.SettingsSprite_class import SettingsSprite
+from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
 background = random.choice(images)
 
+
 class DeadlyHunt(arcade.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True, fullscreen=True)
+        super().__init__(width, height, title, resizable=True, fullscreen=False)
         self.background = arcade.load_texture(f"images/{background}")
         self.settings_sprite_list = arcade.SpriteList()
         self.fullscreen_flag = True
+
+        self.main_view = None
 
     def on_draw(self):
         self.clear()
