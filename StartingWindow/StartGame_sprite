@@ -1,0 +1,4 @@
+import arcade
+
+
+class StartGame(arcade.Sprite):
