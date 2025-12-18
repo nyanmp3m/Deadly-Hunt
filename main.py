@@ -11,12 +11,10 @@ class MainWindow(arcade.Window):
         self.settings_sprite_list = arcade.SpriteList()
 
     def setup(self):
-        pass
-
-    def on_draw(self):
         setting = SettingsSprite()
         self.settings_sprite_list.append(setting)
 
+    def on_draw(self):
         self.clear()
         self.settings_sprite_list.draw()
 
@@ -24,7 +22,8 @@ class MainWindow(arcade.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
-
+        for sprite in settings_sprite_hits:
+            sprite.remove_from_sprite_lists()
 
 
 def main():
