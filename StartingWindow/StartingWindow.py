@@ -1,5 +1,6 @@
 import arcade
 import random
+import time
 
 from Sprites_classes.SettingsSprite_class import SettingsSprite
 from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
@@ -9,14 +10,17 @@ images = ["background1.jpg", "background2.jpg"]
 background = random.choice(images)
 
 
-class DeadlyHunt(arcade.Window):
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title, resizable=True, fullscreen=False)
+class DeadlyHunt(arcade.View):
+    def __init__(self, window):
+        super().__init__()
         self.background = arcade.load_texture(f"images/{background}")
         self.settings_sprite_list = arcade.SpriteList()
-        self.fullscreen_flag = True
 
-        self.main_view = None
+        setting = SettingsSprite()
+        self.settings_sprite_list.append(setting)
+
+        self.fullscreen_flag = True
+        self.window = window
 
     def on_draw(self):
         self.clear()
@@ -25,28 +29,27 @@ class DeadlyHunt(arcade.Window):
         self.settings_sprite_list.draw()
 
     def setup(self):
-        setting = SettingsSprite()
-        self.settings_sprite_list.append(setting)
+        pass
 
     def on_mouse_press(self, x, y, button, modifiers):
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
         for sprite in settings_sprite_hits:
-            sprite.remove_from_sprite_lists()
+            self.window.show_view(SettingsWindow(self.window, self))
 
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:
             if self.fullscreen_flag:
-                self.set_fullscreen(False)
+                self.window.set_fullscreen(False)
                 self.fullscreen_flag = False
             elif not self.fullscreen_flag:
-                self.set_fullscreen(True)
+                self.window.set_fullscreen(True)
                 self.fullscreen_flag = True
 
 
 def main():
-    game = DeadlyHunt(width_user, height_user, "Deadly_Hunt")
-    game.setup()
+    window = arcade.Window(width_user, height_user, "Deadly_Hunt")
+    window.show_view(DeadlyHunt(window))
     arcade.run()
 
 
