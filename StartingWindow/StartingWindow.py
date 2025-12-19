@@ -4,6 +4,7 @@ import time
 
 from Sprites_classes.SettingsSprite_class import SettingsSprite
 from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
+from StartGameButton_sprite import StartGameButton
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -15,6 +16,10 @@ class DeadlyHunt(arcade.View):
         super().__init__()
         self.background = arcade.load_texture(f"images/{background}")
         self.settings_sprite_list = arcade.SpriteList()
+        self.start_game_list = arcade.SpriteList()
+
+        start_game_button = StartGameButton()
+        self.start_game_list.append(start_game_button)
 
         setting = SettingsSprite()
         self.settings_sprite_list.append(setting)
@@ -27,6 +32,7 @@ class DeadlyHunt(arcade.View):
         arcade.draw_texture_rect(self.background,
                                  arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
         self.settings_sprite_list.draw()
+        self.start_game_list.draw()
 
     def setup(self):
         pass
