@@ -6,6 +6,7 @@ from Sprites_classes.SettingsSprite_class import SettingsSprite
 from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
 from Sprites_classes.StartGameButtonSprite_class import StartGameButtonSprite
 from Sprites_classes.explosion import Explosion
+from Sprites_classes.Cursor_texture import Cursor
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -16,9 +17,14 @@ class DeadlyHunt(arcade.View):
     def __init__(self, window):
         super().__init__()
         self.background = arcade.load_texture(f"images/{background}")
+        self.window.set_mouse_visible(False)
         self.settings_sprite_list = arcade.SpriteList()
         self.start_game_list = arcade.SpriteList()
         self.explosion_animation_list = arcade.SpriteList()
+        self.cursor_list = arcade.SpriteList()
+
+        self.cursor = Cursor(width_user // 2, height_user // 2)
+        self.cursor_list.append(self.cursor)
 
         start_game_button = StartGameButtonSprite()
         self.start_game_list.append(start_game_button)
@@ -29,6 +35,10 @@ class DeadlyHunt(arcade.View):
         self.fullscreen_flag = True
         self.window = window
 
+    def setup(self):
+        pass
+
+
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.background,
@@ -36,6 +46,7 @@ class DeadlyHunt(arcade.View):
         self.settings_sprite_list.draw()
         self.start_game_list.draw()
         self.explosion_animation_list.draw()
+        self.cursor_list.draw()
 
     def on_update(self, delta_time):
         finished_animation = []
@@ -47,17 +58,19 @@ class DeadlyHunt(arcade.View):
         for i in finished_animation:
             self.explosion_animation_list.remove(i)
 
-    def setup(self):
-        pass
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.cursor_list[0].center_x = x
+        self.cursor_list[0].center_y = y
 
     def on_mouse_press(self, x, y, button, modifiers):
+        explosion = Explosion(x, y)
+        self.explosion_animation_list.append(explosion)
+
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
         for sprite in settings_sprite_hits:
             self.window.show_view(SettingsWindow(self.window, self))
 
-        explosion = Explosion(x, y)
-        self.explosion_animation_list.append(explosion)
 
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:
