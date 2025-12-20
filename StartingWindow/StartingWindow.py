@@ -63,7 +63,7 @@ class DeadlyHunt(arcade.View):
         self.cursor_list[0].center_y = y
 
     def on_mouse_press(self, x, y, button, modifiers):
-        explosion = Explosion(x, y)
+        explosion = Explosion(x, y + 20)
         self.explosion_animation_list.append(explosion)
 
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)

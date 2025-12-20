@@ -7,6 +7,6 @@ class Cursor(arcade.Sprite):
         super().__init__()
         self.cursor_x = x
         self.cursor_y = y
-        texture = arcade.load_texture("Pictures/mouse_texture.png.png")
+        texture = arcade.load_texture("Pictures/cursor_texture.png")
         self.texture = texture
         self.scale = 0.1
