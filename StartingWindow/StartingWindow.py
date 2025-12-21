@@ -69,7 +69,7 @@ class DeadlyHunt(arcade.View):
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
         for sprite in settings_sprite_hits:
-            self.window.show_view(SettingsWindow(self.window, self))
+            self.window.show_view(SettingsWindow(self.window, self, self.background))
 
 
     def on_key_press(self, key, modifier):
