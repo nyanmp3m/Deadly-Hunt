@@ -1,6 +1,5 @@
 import arcade
 import random
-import time
 
 from Sprites_classes.SettingsSprite_class import SettingsSprite
 from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
@@ -22,6 +21,8 @@ class DeadlyHunt(arcade.View):
         self.start_game_list = arcade.SpriteList()
         self.explosion_animation_list = arcade.SpriteList()
         self.cursor_list = arcade.SpriteList()
+
+        self.explosion_flag = False
 
         self.cursor = Cursor(width_user // 2, height_user // 2)
         self.cursor_list.append(self.cursor)
@@ -63,8 +64,9 @@ class DeadlyHunt(arcade.View):
         self.cursor_list[0].center_y = y
 
     def on_mouse_press(self, x, y, button, modifiers):
-        explosion = Explosion(x, y + 20)
-        self.explosion_animation_list.append(explosion)
+        if len(self.explosion_animation_list) == 0:
+            explosion = Explosion(x, y + 20)
+            self.explosion_animation_list.append(explosion)
 
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
