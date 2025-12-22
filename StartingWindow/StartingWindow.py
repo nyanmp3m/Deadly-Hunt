@@ -36,6 +36,8 @@ class DeadlyHunt(arcade.View):
         self.fullscreen_flag = True
         self.window = window
 
+        self.flag_mouse_on_start_button = False
+
     def setup(self):
         pass
 
@@ -59,9 +61,21 @@ class DeadlyHunt(arcade.View):
         for i in finished_animation:
             self.explosion_animation_list.remove(i)
 
+        if self.flag_mouse_on_start_button:
+            if self.start_game_list[0].center_x < 200:
+                self.start_game_list[0].center_x += 5
+        else:
+            if self.start_game_list[0].center_x > (width_user // 2) - (width_user // 2.5):
+                self.start_game_list[0].center_x -= 5
+
     def on_mouse_motion(self, x, y, dx, dy):
         self.cursor_list[0].center_x = x
         self.cursor_list[0].center_y = y
+
+        if len(arcade.get_sprites_at_point((x, y), self.start_game_list)) == 1:
+            self.flag_mouse_on_start_button = True
+        else:
+            self.flag_mouse_on_start_button = False
 
     def on_mouse_press(self, x, y, button, modifiers):
         if len(self.explosion_animation_list) == 0:
