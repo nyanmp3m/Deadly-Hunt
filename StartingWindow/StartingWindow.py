@@ -62,7 +62,7 @@ class DeadlyHunt(arcade.View):
             self.explosion_animation_list.remove(i)
 
         if self.flag_mouse_on_start_button:
-            if self.start_game_list[0].center_x < 200:
+            if self.start_game_list[0].center_x < ((width_user // 2) - (width_user // 2.5)) + 50:
                 self.start_game_list[0].center_x += 5
         else:
             if self.start_game_list[0].center_x > (width_user // 2) - (width_user // 2.5):
