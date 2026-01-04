@@ -6,6 +6,7 @@ from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
 from Sprites_classes.StartGameButtonSprite_class import StartGameButtonSprite
 from Sprites_classes.explosion import Explosion
 from Sprites_classes.Cursor_texture import Cursor
+from Sprites_classes.skeleton import Skeleton
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -21,6 +22,7 @@ class DeadlyHunt(arcade.View):
         self.start_game_list = arcade.SpriteList()
         self.explosion_animation_list = arcade.SpriteList()
         self.cursor_list = arcade.SpriteList()
+        self.skeleton_list = arcade.SpriteList()
 
         self.explosion_flag = False
 
@@ -32,6 +34,9 @@ class DeadlyHunt(arcade.View):
 
         setting = SettingsSprite()
         self.settings_sprite_list.append(setting)
+
+        skeleton = Skeleton()
+        self.skeleton_list.append(skeleton)
 
         self.fullscreen_flag = True
         self.window = window
@@ -48,10 +53,17 @@ class DeadlyHunt(arcade.View):
                                  arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
         self.settings_sprite_list.draw()
         self.start_game_list.draw()
+        if background == "background1.jpg":
+            self.skeleton_list.draw()
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
 
     def on_update(self, delta_time):
+        if background == "background1.jpg":
+            self.skeleton_list.update()
+            for i in self.skeleton_list:
+                i.update_animation(delta_time)
+
         finished_animation = []
         for i in self.explosion_animation_list:
             i.update_animation(delta_time)
@@ -87,6 +99,12 @@ class DeadlyHunt(arcade.View):
         for sprite in settings_sprite_hits:
             self.window.show_view(SettingsWindow(self.window, self, self.background))
 
+        skeleton_hits = arcade.get_sprites_at_point((x, y), self.skeleton_list)
+
+        for sprite in skeleton_hits:
+            if not sprite.is_died and sprite.cooldown >= 0.5:
+                sprite.is_damaged = True
+                sprite.hp -= 1
 
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:
