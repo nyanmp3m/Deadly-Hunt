@@ -126,10 +126,20 @@ class GameView(arcade.View):
         super().__init__(window)
         self.background = arcade.color.DARK_GREEN
         self.window = window
+        self.fullscreen = False
         arcade.set_background_color(self.background)
 
     def on_draw(self):
         self.clear()
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.RCTRL:
+            if not self.fullscreen:
+                self.window.set_fullscreen(False)
+                self.fullscreen = True
+            elif self.fullscreen:
+                self.window.set_fullscreen(True)
+                self.fullscreen = False
 
 
 def main():
