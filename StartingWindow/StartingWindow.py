@@ -13,7 +13,7 @@ images = ["background1.jpg", "background2.jpg"]
 background = random.choice(images)
 
 
-class DeadlyHunt(arcade.View):
+class MainMenu(arcade.View):
     def __init__(self, window):
         super().__init__()
         self.background = arcade.load_texture(f"images/{background}")
@@ -23,14 +23,15 @@ class DeadlyHunt(arcade.View):
         self.explosion_animation_list = arcade.SpriteList()
         self.cursor_list = arcade.SpriteList()
         self.skeleton_list = arcade.SpriteList()
+        self.window = window
 
         self.explosion_flag = False
 
         self.cursor = Cursor(width_user // 2, height_user // 2)
         self.cursor_list.append(self.cursor)
 
-        start_game_button = StartGameButtonSprite()
-        self.start_game_list.append(start_game_button)
+        self.start_game_button = StartGameButtonSprite()
+        self.start_game_list.append(self.start_game_button)
 
         setting = SettingsSprite()
         self.settings_sprite_list.append(setting)
@@ -106,6 +107,10 @@ class DeadlyHunt(arcade.View):
                 sprite.is_damaged = True
                 sprite.hp -= 1
 
+        if self.start_game_button.collides_with_point((x, y)):
+            game_view = GameView(self.window)
+            self.window.show_view(game_view)
+
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:
             if self.fullscreen_flag:
@@ -116,9 +121,20 @@ class DeadlyHunt(arcade.View):
                 self.fullscreen_flag = True
 
 
+class GameView(arcade.View):
+    def __init__(self, window):
+        super().__init__(window)
+        self.background = arcade.color.DARK_GREEN
+        self.window = window
+        arcade.set_background_color(self.background)
+
+    def on_draw(self):
+        self.clear()
+
+
 def main():
     window = arcade.Window(width_user, height_user, "Deadly_Hunt")
-    window.show_view(DeadlyHunt(window))
+    window.show_view(MainMenu(window))
     arcade.run()
 
 
