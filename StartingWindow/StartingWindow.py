@@ -11,6 +11,7 @@ from Sprites_classes.CharacterChangingButtonSprite_class import CharacterChangeB
 from Sprites_classes.KnightCharacterSprite_class import KnightCharacterSprite
 from Sprites_classes.ChangeCharacterArrowLeftSprite_class import ChangeCharacterArrowLeftSprite
 from Sprites_classes.ChangeCharacterArrowRightSprite_class import ChangeCharacterArrowRightSprite
+from Sprites_classes.GnomeCharacterSprite_class import GnomeCharacterSprite
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -164,8 +165,15 @@ class CharacterChangeView(arcade.View):
         arcade.set_background_color(self.background)
 
         self.characters_choice_list = arcade.SpriteList()
+        self.current_character_index = 0
+        self.characters_names = ["Рыцарь", "Гном"]
+
         self.knight_character = KnightCharacterSprite()
         self.characters_choice_list.append(self.knight_character)
+
+        self.gnome_character = GnomeCharacterSprite()
+        self.characters_choice_list.append(self.gnome_character)
+        self.gnome_character.visible = False
 
         self.arrow_left_list = arcade.SpriteList()
         self.arrow_left = ChangeCharacterArrowLeftSprite()
@@ -184,6 +192,7 @@ class CharacterChangeView(arcade.View):
 
     def on_update(self, delta_time):
         pass
+
 
 
 
