@@ -9,6 +9,8 @@ from Sprites_classes.Cursor_texture import Cursor
 from Sprites_classes.skeleton import Skeleton
 from Sprites_classes.CharacterChangingButtonSprite_class import CharacterChangeButtonSprite
 from Sprites_classes.KnightCharacterSprite_class import KnightCharacterSprite
+from Sprites_classes.ChangeCharacterArrowLeftSprite_class import ChangeCharacterArrowLeftSprite
+from Sprites_classes.ChangeCharacterArrowRightSprite_class import ChangeCharacterArrowRightSprite
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -26,7 +28,6 @@ class MainMenu(arcade.View):
         self.cursor_list = arcade.SpriteList()
         self.skeleton_list = arcade.SpriteList()
         self.change_character_button_list = arcade.SpriteList()
-        self.characters_choice_list = arcade.SpriteList()
         self.window = window
 
         self.explosion_flag = False
@@ -46,11 +47,6 @@ class MainMenu(arcade.View):
         skeleton = Skeleton()
         self.skeleton_list.append(skeleton)
 
-        # Тут персонажи, НЕ МЕНЯТЬ!
-        self.knight_character = KnightCharacterSprite()
-        self.characters_choice_list = arcade.SpriteList()
-        # Тут конец списка персонажей.
-
         self.fullscreen_flag = True
         self.window = window
 
@@ -67,7 +63,6 @@ class MainMenu(arcade.View):
         self.settings_sprite_list.draw()
         self.start_game_list.draw()
         self.change_character_button_list.draw()
-        #self.characters_choice_list.draw()
         if background == "background1.jpg":
             self.skeleton_list.draw()
         self.explosion_animation_list.draw()
@@ -168,8 +163,28 @@ class CharacterChangeView(arcade.View):
         self.fullscreen = False
         arcade.set_background_color(self.background)
 
+        self.characters_choice_list = arcade.SpriteList()
+        self.knight_character = KnightCharacterSprite()
+        self.characters_choice_list.append(self.knight_character)
+
+        self.arrow_left_list = arcade.SpriteList()
+        self.arrow_left = ChangeCharacterArrowLeftSprite()
+        self.arrow_left_list.append(self.arrow_left)
+
+        self.arrow_right_list = arcade.SpriteList()
+        self.arrow_right = ChangeCharacterArrowRightSprite()
+        self.arrow_right_list.append(self.arrow_right)
+
+
     def on_draw(self):
         self.clear()
+        self.characters_choice_list.draw()
+        self.arrow_left_list.draw()
+        self.arrow_right_list.draw()
+
+    def on_update(self, delta_time):
+        pass
+
 
 
 def main():
