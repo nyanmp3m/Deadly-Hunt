@@ -7,6 +7,7 @@ from Sprites_classes.StartGameButtonSprite_class import StartGameButtonSprite
 from Sprites_classes.explosion import Explosion
 from Sprites_classes.Cursor_texture import Cursor
 from Sprites_classes.skeleton import Skeleton
+from Sprites_classes.CharacterChangingButtonSprite_class import CharacterChangeButtonSprite
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -23,6 +24,7 @@ class MainMenu(arcade.View):
         self.explosion_animation_list = arcade.SpriteList()
         self.cursor_list = arcade.SpriteList()
         self.skeleton_list = arcade.SpriteList()
+        self.change_character_button_list = arcade.SpriteList()
         self.window = window
 
         self.explosion_flag = False
@@ -32,6 +34,9 @@ class MainMenu(arcade.View):
 
         self.start_game_button = StartGameButtonSprite()
         self.start_game_list.append(self.start_game_button)
+
+        self.change_character_button = CharacterChangeButtonSprite()
+        self.change_character_button_list.append(self.change_character_button)
 
         setting = SettingsSprite()
         self.settings_sprite_list.append(setting)
@@ -54,6 +59,7 @@ class MainMenu(arcade.View):
                                  arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
         self.settings_sprite_list.draw()
         self.start_game_list.draw()
+        self.change_character_button_list.draw()
         if background == "background1.jpg":
             self.skeleton_list.draw()
         self.explosion_animation_list.draw()
@@ -80,6 +86,9 @@ class MainMenu(arcade.View):
         else:
             if self.start_game_list[0].center_x > (width_user // 2) - (width_user // 2.5):
                 self.start_game_list[0].center_x -= 5
+
+        self.change_character_button.center_x = width_user // 2
+        self.change_character_button.center_y = height_user // 2
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.cursor_list[0].center_x = x
@@ -111,6 +120,10 @@ class MainMenu(arcade.View):
             game_view = GameView(self.window)
             self.window.show_view(game_view)
 
+        if self.change_character_button.collides_with_point((x, y)):
+            character_change_view = CharcacterChangeView(self.window)
+            self.window.show_view(character_change_view)
+
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:
             if self.fullscreen_flag:
@@ -140,6 +153,17 @@ class GameView(arcade.View):
             elif self.fullscreen:
                 self.window.set_fullscreen(True)
                 self.fullscreen = False
+
+class CharcacterChangeView(arcade.View):
+    def __init__(self, window):
+        super().__init__(window)
+        self.background = arcade.color.DARK_GREEN
+        self.window = window
+        self.fullscreen = False
+        arcade.set_background_color(self.background)
+
+    def on_draw(self):
+        self.clear()
 
 
 def main():
