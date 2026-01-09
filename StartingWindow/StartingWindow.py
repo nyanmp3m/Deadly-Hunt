@@ -12,6 +12,8 @@ from Sprites_classes.KnightCharacterSprite_class import KnightCharacterSprite
 from Sprites_classes.ChangeCharacterArrowLeftSprite_class import ChangeCharacterArrowLeftSprite
 from Sprites_classes.ChangeCharacterArrowRightSprite_class import ChangeCharacterArrowRightSprite
 from Sprites_classes.GnomeCharacterSprite_class import GnomeCharacterSprite
+from Sprites_classes.SamuraiCharacterSprite_class import SamuraiCharacterSprite
+from Sprites_classes.ApproveCharacterButtonSprite_class import ApproveCharacterButtonSprite
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]
@@ -170,7 +172,7 @@ class CharacterChangeView(arcade.View):
 
         self.characters_choice_list = arcade.SpriteList()
         self.current_character_index = 0
-        self.characters_names = ["Рыцарь", "Гном"]
+        self.characters_names = ["Рыцарь", "Гном", "Самурай"]
 
         self.knight_character = KnightCharacterSprite()
         self.characters_choice_list.append(self.knight_character)
@@ -180,6 +182,10 @@ class CharacterChangeView(arcade.View):
         self.characters_choice_list.append(self.gnome_character)
         self.gnome_character.visible = False
 
+        self.samurai_character = SamuraiCharacterSprite()
+        self.characters_choice_list.append(self.samurai_character)
+        self.samurai_character.visible = False
+
         self.arrow_left_list = arcade.SpriteList()
         self.arrow_left = ChangeCharacterArrowLeftSprite()
         self.arrow_left_list.append(self.arrow_left)
@@ -188,12 +194,17 @@ class CharacterChangeView(arcade.View):
         self.arrow_right = ChangeCharacterArrowRightSprite()
         self.arrow_right_list.append(self.arrow_right)
 
+        self.approve_character_button_list = arcade.SpriteList()
+        self.approve_character_button = ApproveCharacterButtonSprite()
+        self.approve_character_button_list.append(self.approve_character_button)
+
 
     def on_draw(self):
         self.clear()
         self.characters_choice_list.draw()
         self.arrow_left_list.draw()
         self.arrow_right_list.draw()
+        self.approve_character_button_list.draw()
         self.cursor_list.draw()
 
     def on_update(self, delta_time):
@@ -203,7 +214,7 @@ class CharacterChangeView(arcade.View):
         self.cursor_list[0].center_x = x
         self.cursor_list[0].center_y = y
 
-    def on_mouse_release(self, x, y, button, modifiers):
+    def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
             if arcade.get_sprites_at_point((x, y), self.arrow_right_list):
                 self.characters_choice_list[self.current_character_index].visible = False
@@ -219,6 +230,11 @@ class CharacterChangeView(arcade.View):
                     self.current_character_index = len(self.characters_choice_list) - 1
                     self.characters_choice_list[self.current_character_index].visible = True
                 self.characters_choice_list[self.current_character_index].visible = True
+
+            if self.approve_character_button.collides_with_point((x, y)):
+                main_menu = MainMenu(self.window)
+                self.window.show_view(main_menu)
+
 
 
 
