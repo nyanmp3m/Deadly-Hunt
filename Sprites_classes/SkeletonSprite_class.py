@@ -1,11 +1,14 @@
 import arcade
 import enum
 from arcade.examples.gl.game_of_life_colors import CELL_SIZE
+
 width_user, height_user = arcade.get_display_size()
+
 
 class FaceDirection(enum.Enum):
     LEFT = 0
     RIGHT = 1
+
 
 class Skeleton(arcade.Sprite):
     def __init__(self):
@@ -48,7 +51,6 @@ class Skeleton(arcade.Sprite):
         self.CELL_SIZE = 100
         self.speed = 50
         self.face_direction = FaceDirection.RIGHT
-
 
     def update(self, delta_time):
         if self.is_damaged:
@@ -139,5 +141,3 @@ class Skeleton(arcade.Sprite):
                     self.texture = self.walking_animation[self.current_texture]
                 else:
                     self.texture = self.walking_animation[self.current_texture].flip_horizontally()
-
-

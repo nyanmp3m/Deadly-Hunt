@@ -1,10 +1,11 @@
 from Sprites_classes.Cursor_texture import Cursor
-from Sprites_classes.explosion import Explosion
+from Sprites_classes.ExplosionSprite_class import Explosion
 
 import arcade
 import random
 
 width_user, height_user = arcade.get_display_size()
+
 
 class SettingsWindow(arcade.View):
     def __init__(self, window, main_view, background):

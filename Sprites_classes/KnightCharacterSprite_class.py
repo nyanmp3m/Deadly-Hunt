@@ -2,6 +2,7 @@ import arcade
 
 width_user, height_user = arcade.get_display_size()
 
+
 class KnightCharacterSprite(arcade.Sprite):
     def __init__(self):
         super().__init__()

@@ -1,5 +1,6 @@
-from Sprites_classes.SettingsSprite_class import SettingsSprite
 import arcade
+
+from Sprites_classes.SettingsSprite_class import SettingsSprite
 
 width_user, height_user = arcade.get_display_size()
 
@@ -17,7 +18,6 @@ class MainWindow(arcade.Window):
     def on_draw(self):
         self.clear()
         self.settings_sprite_list.draw()
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
