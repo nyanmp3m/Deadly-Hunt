@@ -4,9 +4,10 @@ import random
 from Sprites_classes.SettingsSprite_class import SettingsSprite
 from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
 from Sprites_classes.StartGameButtonSprite_class import StartGameButtonSprite
-from Sprites_classes.explosion import Explosion
-from Sprites_classes.skeleton import Skeleton
+from Sprites_classes.ExplosionSprite_class import Explosion
+from Sprites_classes.SkeletonSprite_class import Skeleton
 from Sprites_classes.Cursor_texture import Cursor
+from Sprites_classes.GhostSprite_class import GHOST
 
 
 width_user, height_user = arcade.get_display_size()
@@ -24,6 +25,7 @@ class MainMenu(arcade.View):
         self.explosion_animation_list = arcade.SpriteList()
         self.cursor_list = arcade.SpriteList()
         self.skeleton_list = arcade.SpriteList()
+        self.ghost_list = arcade.SpriteList()
         self.window = window
 
         self.explosion_flag = False
@@ -39,6 +41,9 @@ class MainMenu(arcade.View):
 
         skeleton = Skeleton()
         self.skeleton_list.append(skeleton)
+
+        ghost = GHOST()
+        self.ghost_list.append(ghost)
 
         self.fullscreen_flag = True
         self.window = window
@@ -57,6 +62,8 @@ class MainMenu(arcade.View):
         self.start_game_list.draw()
         if background == "background1.jpg":
             self.skeleton_list.draw()
+        if background == "background2.jpg":
+            self.ghost_list.draw()
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
 
@@ -64,6 +71,11 @@ class MainMenu(arcade.View):
         if background == "background1.jpg":
             self.skeleton_list.update()
             for i in self.skeleton_list:
+                i.update_animation(delta_time)
+
+        if background == "background2.jpg":
+            self.ghost_list.update()
+            for i in self.ghost_list:
                 i.update_animation(delta_time)
 
         finished_animation = []
@@ -108,6 +120,11 @@ class MainMenu(arcade.View):
             if not sprite.is_died and sprite.cooldown >= 0.5:
                 sprite.is_damaged = True
                 sprite.hp -= 1
+
+        ghost_hits = arcade.get_sprites_at_point((x, y), self.ghost_list)
+        for sprite in ghost_hits:
+            if not sprite.disappeared and not sprite.disappearing and not sprite.invisible and sprite.cooldown >= 0.5:
+                sprite.disappearing = True
 
         if self.start_game_button.collides_with_point((x, y)):
             new_game_menu = NewGameWindowView(self.window)
