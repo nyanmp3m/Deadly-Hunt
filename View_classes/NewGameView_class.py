@@ -19,7 +19,7 @@ class NewGameWindowView(arcade.View):
         self.explosion_flag = False
         self.explosion_animation_list = arcade.SpriteList()
 
-        self.heads_list = arcade.SpriteList()
+        self.heads_list = []
 
         self.fullscreen_flag = True
 
@@ -30,25 +30,36 @@ class NewGameWindowView(arcade.View):
         self.white_head = arcade.Sprite("Pictures/Characters/White_head_for_sprite.png", scale=0.5)
         self.white_head.center_x = width_user * 0.3
         self.white_head.center_y = height_user * 0.7
-        self.heads_list.append(self.white_head)
+        white_head_list = arcade.SpriteList()
+        white_head_list.append(self.white_head)
+        self.heads_list.append(white_head_list)
 
         self.brown_head = arcade.Sprite("Pictures/Characters/Brown_head_for_sprite.png", scale=0.5)
         self.brown_head.center_x = width_user * 0.3
         self.brown_head.center_y = height_user * 0.7
-        self.brown_head.visible = False
-        self.heads_list.append(self.brown_head)
+        brown_head_list = arcade.SpriteList()
+        brown_head_list.append(self.brown_head)
+        self.heads_list.append(brown_head_list)
+
+        self.black_head = arcade.Sprite("Pictures/Characters/Black_head_for_sprite.png", scale=0.5)
+        self.black_head.center_x = width_user * 0.3
+        self.black_head.center_y = height_user * 0.7
+        black_head_list = arcade.SpriteList()
+        black_head_list.append(self.black_head)
+        self.heads_list.append(black_head_list)
 
         self.yellow_head = arcade.Sprite("Pictures/Characters/Yellow_head_for_sprite.png", scale=0.5)
         self.yellow_head.center_x = width_user * 0.3
         self.yellow_head.center_y = height_user * 0.7
-        self.yellow_head.visible = False
-        self.heads_list.append(self.yellow_head)
+        yellow_head_list = arcade.SpriteList()
+        yellow_head_list.append(self.yellow_head)
+        self.heads_list.append(yellow_head_list)
 
 
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
-        self.heads_list.draw()
+        self.heads_list[self.current_head_index].draw()
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
 
@@ -79,3 +90,15 @@ class NewGameWindowView(arcade.View):
             elif not self.fullscreen_flag:
                 self.window.set_fullscreen(True)
                 self.fullscreen_flag = True
+        elif key == arcade.key.RIGHT:
+            if self.current_head_index == len(self.heads_list) - 1:
+                self.current_head_index = 0
+            elif self.current_head_index < len(self.heads_list) - 1:
+                self.current_head_index += 1
+
+        elif key == arcade.key.LEFT:
+            if self.current_head_index == 0:
+                self.current_head_index = 3
+            elif self.current_head_index > 0:
+                self.current_head_index -= 1
+            print(self.current_head_index)
