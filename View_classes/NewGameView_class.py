@@ -1,20 +1,23 @@
 import arcade
 
-from Sprites_classes.Cursor_texture import Cursor
 from Sprites_classes.ExplosionSprite_class import Explosion
+
+from independentVariables.variables import Cursor_obj
 
 width_user, height_user = arcade.get_display_size()
 
 
 class NewGameWindowView(arcade.View):
-    def __init__(self, window, Cursor):
+    def __init__(self, window,starting_window):
         super().__init__(window)
         self.window = window
         self.texture = arcade.load_texture("Pictures/New_game_menu_background.png")
         self.cursor_list = arcade.SpriteList()
 
-        self.cursor = Cursor
+        self.cursor = Cursor_obj
         self.cursor_list.append(self.cursor)
+
+        self.starting_window_view = starting_window
 
         self.explosion_flag = False
         self.explosion_animation_list = arcade.SpriteList()
@@ -101,3 +104,6 @@ class NewGameWindowView(arcade.View):
                 self.current_head_index = 3
             elif self.current_head_index > 0:
                 self.current_head_index -= 1
+
+        elif key == arcade.key.ESCAPE:
+            self.window.show_view(self.starting_window_view)

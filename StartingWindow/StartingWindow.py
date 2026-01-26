@@ -2,12 +2,13 @@ import arcade
 import random
 
 from Sprites_classes.SettingsSprite_class import SettingsSprite
-from Sprites_classes.SettingsSpriteWindow_class import SettingsWindow
+from View_classes.SettingsSpriteWindow_class import SettingsWindow
 from Sprites_classes.StartGameButtonSprite_class import StartGameButtonSprite
 from Sprites_classes.ExplosionSprite_class import Explosion
 from Sprites_classes.SkeletonSprite_class import Skeleton
-from Sprites_classes.Cursor_texture import Cursor
 from Sprites_classes.GhostSprite_class import GHOST
+
+from independentVariables.variables import Cursor_obj
 
 from View_classes.NewGameView_class import NewGameWindowView
 
@@ -31,7 +32,7 @@ class MainMenu(arcade.View):
 
         self.explosion_flag = False
 
-        self.cursor = Cursor(width_user // 2, height_user // 2)
+        self.cursor = Cursor_obj
         self.cursor_list.append(self.cursor)
 
         self.start_game_button = StartGameButtonSprite()
@@ -104,10 +105,6 @@ class MainMenu(arcade.View):
             self.flag_mouse_on_start_button = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        if len(self.explosion_animation_list) == 0:
-            explosion = Explosion(x, y + 20)
-            self.explosion_animation_list.append(explosion)
-
         settings_sprite_hits = arcade.get_sprites_at_point((x, y), self.settings_sprite_list)
 
         for sprite in settings_sprite_hits:
@@ -125,9 +122,14 @@ class MainMenu(arcade.View):
             if not sprite.disappeared and not sprite.disappearing and not sprite.invisible and sprite.cooldown >= 0.5:
                 sprite.disappearing = True
 
+        start_game_button_hits = arcade.get_sprites_at_point((x, y), self.start_game_list)
         if self.start_game_button.collides_with_point((x, y)):
-            new_game_menu = NewGameWindowView(self.window, self.cursor)
+            new_game_menu = NewGameWindowView(self.window, self)
             self.window.show_view(new_game_menu)
+
+        if len(self.explosion_animation_list) == 0 and len(settings_sprite_hits) == 0 and len(start_game_button_hits) == 0:
+            explosion = Explosion(x, y + 20)
+            self.explosion_animation_list.append(explosion)
 
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:

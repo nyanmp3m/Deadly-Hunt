@@ -1,8 +1,10 @@
+import arcade
+import random
+
 from Sprites_classes.Cursor_texture import Cursor
 from Sprites_classes.ExplosionSprite_class import Explosion
 
-import arcade
-import random
+from independentVariables.variables import Cursor_obj
 
 width_user, height_user = arcade.get_display_size()
 
@@ -16,7 +18,7 @@ class SettingsWindow(arcade.View):
         self.background = background
 
         self.cursor_list = arcade.SpriteList()
-        self.cursor = Cursor(width_user // 2, height_user // 2)
+        self.cursor = Cursor_obj
         self.cursor_list.append(self.cursor)
 
         self.explosion_list = arcade.SpriteList()
