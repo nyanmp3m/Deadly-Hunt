@@ -7,19 +7,21 @@ width_user, height_user = arcade.get_display_size()
 
 
 class NewGameWindowView(arcade.View):
-    def __init__(self, window):
+    def __init__(self, window, Cursor):
         super().__init__(window)
         self.window = window
         self.texture = arcade.load_texture("Pictures/New_game_menu_background.png")
         self.cursor_list = arcade.SpriteList()
 
-        self.cursor = Cursor(width_user // 2, height_user // 2)
+        self.cursor = Cursor
         self.cursor_list.append(self.cursor)
 
         self.explosion_flag = False
         self.explosion_animation_list = arcade.SpriteList()
 
         self.heads_list = arcade.SpriteList()
+
+        self.fullscreen_flag = True
 
         # Текущий индекс выбранной головы
         self.current_head_index = 0
@@ -68,3 +70,12 @@ class NewGameWindowView(arcade.View):
         if len(self.explosion_animation_list) == 0:
             explosion = Explosion(x, y + 20)
             self.explosion_animation_list.append(explosion)
+
+    def on_key_press(self, key, modifier):
+        if key == arcade.key.RCTRL:
+            if self.fullscreen_flag:
+                self.window.set_fullscreen(False)
+                self.fullscreen_flag = False
+            elif not self.fullscreen_flag:
+                self.window.set_fullscreen(True)
+                self.fullscreen_flag = True

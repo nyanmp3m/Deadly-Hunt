@@ -126,7 +126,7 @@ class MainMenu(arcade.View):
                 sprite.disappearing = True
 
         if self.start_game_button.collides_with_point((x, y)):
-            new_game_menu = NewGameWindowView(self.window)
+            new_game_menu = NewGameWindowView(self.window, self.cursor)
             self.window.show_view(new_game_menu)
 
     def on_key_press(self, key, modifier):
