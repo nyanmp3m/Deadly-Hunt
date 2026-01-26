@@ -101,4 +101,3 @@ class NewGameWindowView(arcade.View):
                 self.current_head_index = 3
             elif self.current_head_index > 0:
                 self.current_head_index -= 1
-            print(self.current_head_index)
