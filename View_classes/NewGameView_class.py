@@ -4,6 +4,9 @@ from Sprites_classes.ExplosionSprite_class import Explosion
 
 from independentVariables.variables import Cursor_obj
 
+from Sprites_classes.StartMainGameButtonSprite_class import StartMainGameButtonSprite
+from View_classes.ExplanatoryNoteWindow_class import ExplanatoryNote
+
 width_user, height_user = arcade.get_display_size()
 
 
@@ -13,9 +16,13 @@ class NewGameWindowView(arcade.View):
         self.window = window
         self.texture = arcade.load_texture("Pictures/New_game_menu_background.png")
         self.cursor_list = arcade.SpriteList()
+        self.start_game_button_list = arcade.SpriteList()
 
         self.cursor = Cursor_obj
         self.cursor_list.append(self.cursor)
+
+        self.start_game_button = StartMainGameButtonSprite()
+        self.start_game_button_list.append(self.start_game_button)
 
         self.starting_window_view = starting_window
 
@@ -63,6 +70,7 @@ class NewGameWindowView(arcade.View):
         self.clear()
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
         self.heads_list[self.current_head_index].draw()
+        self.start_game_button_list.draw()
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
 
@@ -84,6 +92,11 @@ class NewGameWindowView(arcade.View):
         if len(self.explosion_animation_list) == 0:
             explosion = Explosion(x, y + 20)
             self.explosion_animation_list.append(explosion)
+        start_button_hits = arcade.get_sprites_at_point((x, y), self.start_game_button_list)
+
+        for sprite in start_button_hits:
+            note = ExplanatoryNote()
+            self.window.show_view(note)
 
     def on_key_press(self, key, modifier):
         if key == arcade.key.RCTRL:

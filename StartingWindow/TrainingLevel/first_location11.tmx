@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="60" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
+ <tileset firstgid="1" name="Sprite-9999" tilewidth="16" tileheight="16" tilecount="3710" columns="70">
+  <image source="Sprite-9999.png" width="1126" height="861"/>
+ </tileset>
+ <layer id="1" name="collision" width="60" height="20">
+  <data encoding="base64" compression="zlib">
+   eJztzzWslmcch+EPt3OguBZocd0YcHeKu7u7WwlWoMXd7WADwd3d3d3dwtDiRa4EEphgYSDkvZNrevIk/18oFBQUFBQUFBQUFBQU9P2KCAuF5jGfBSxkUdjX/yz+xvuP3H23P+Ahj3jMk097nn6xq1/4Rz9zub7YtzP8ox+pFu5pSSta04a2tKM9HehIJzrTha50ozs96EkvetOHvvwZ/nlvfwYwkEEM5i+GMJRh/M0/DGcEIxnFaMYwlnGMZwITmcRkpjCVaUxnBjOZxWzmMJcIlrCUZSxnBStZxWrWsJZ1rGcDG9nEZrawlW1sZ8enjbvYzR72so/9HOAghzjMEY5yjOOc4CSnOM0ZznKO81zgIpe4zBWuco3r3OAmt7jNHe5yj/v8y3884zkveMkrXvOG/3nLO94TihsKRSIyUYhKNKITg5jEIjZxCCOcuMTjF+KTgIQkIjFJSEoykpOClKTiV1KThrT8xu+kIz0ZyEgmMpOFrGQjOznISW7ykJd85KcABSlEYYpQlGIUpwQlKUVpylCWcvxBeSpQkUpUpgpVqUZ1alCTWtSmDnWpR30a0JBGNKYJTWlGc1rQkla0pg1taUd7OtCRTnSmC135AIBLj10=
+  </data>
+ </layer>
+</map>
