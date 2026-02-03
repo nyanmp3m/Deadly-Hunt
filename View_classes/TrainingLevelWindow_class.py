@@ -1,5 +1,6 @@
 import arcade
 from pyglet.graphics import Batch
+from Sprites_classes.Player_Egor_class import Egor
 
 SCREEN_WIDTH = 1220
 SCREEN_HEIGHT = 850
@@ -14,12 +15,11 @@ class TrainingLevel(arcade.View):
     def __init__(self):
         super().__init__()
 
-        self.player = arcade.Sprite(
-            "TrainingLevel/Egor.png",
-            scale=0.1)
         self.tile_map = arcade.load_tilemap(
             "TrainingLevel/first_location11.tmx",
             scaling=1.5)
+
+        self.player = Egor()
 
         self.player.center_y = self.height / 2
         self.player.center_x = (self.width / 2) - 950
@@ -81,6 +81,13 @@ class TrainingLevel(arcade.View):
 
         self.physics_engine.update()
 
+        check_x = self.player.center_x
+        check_y = self.player.center_y - self.player.height / 2 - 5
+
+        items_below = arcade.get_sprites_at_point((check_x, check_y), self.scene["collision"])
+        if items_below:
+            self.player.jump_count = 0
+
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.RCTRL:
@@ -91,16 +98,15 @@ class TrainingLevel(arcade.View):
                 self.window.set_fullscreen(True)
                 self.fullscreen_flag = True
         if key == arcade.key.UP:
-            self.player.change_y = PLAYER_SPEED * 3
-        elif key == arcade.key.DOWN:
-            self.player.change_y = -PLAYER_SPEED
+            self.player.jump()
         elif key == arcade.key.LEFT:
-            self.player.change_x = -PLAYER_SPEED
+            self.player.move_left()
         elif key == arcade.key.RIGHT:
-            self.player.change_x = PLAYER_SPEED
+            self.player.move_right()
 
     def on_key_release(self, key, modifiers):
         if key in [arcade.key.UP, arcade.key.DOWN]:
-            self.player.change_y = 0
+            self.player.stop_vertical()
+
         if key in [arcade.key.LEFT, arcade.key.RIGHT]:
-            self.player.change_x = 0
+            self.player.stop_horizontal()
