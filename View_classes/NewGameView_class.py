@@ -29,47 +29,28 @@ class NewGameWindowView(arcade.View):
         self.explosion_flag = False
         self.explosion_animation_list = arcade.SpriteList()
 
-        self.heads_list = []
-
         self.fullscreen_flag = True
 
-        # Текущий индекс выбранной головы
-        self.current_head_index = 0
+        self.white_player_list = arcade.SpriteList()
+        self.white_player = arcade.Sprite("TrainingLevel/Testing_hero/Egor(White_Hero).png")
+        self.white_player_list.append(self.white_player)
 
-        # Загружаем все головы, но будем показывать только одну
-        self.white_head = arcade.Sprite("Pictures/Characters/White_head_for_sprite.png", scale=0.5)
-        self.white_head.center_x = width_user * 0.3
-        self.white_head.center_y = height_user * 0.7
-        white_head_list = arcade.SpriteList()
-        white_head_list.append(self.white_head)
-        self.heads_list.append(white_head_list)
+        self.black_player_list = arcade.SpriteList()
+        self.black_player = arcade.Sprite("TrainingLevel/Testing_hero/Black_hero.png")
+        self.black_player_list.append(self.black_player)
 
-        self.brown_head = arcade.Sprite("Pictures/Characters/Brown_head_for_sprite.png", scale=0.5)
-        self.brown_head.center_x = width_user * 0.3
-        self.brown_head.center_y = height_user * 0.7
-        brown_head_list = arcade.SpriteList()
-        brown_head_list.append(self.brown_head)
-        self.heads_list.append(brown_head_list)
+        self.left_arrow_list = arcade.SpriteList()
+        self.left_arrow = arcade.Sprite("TrainingLevel/Testing_hero/Left_arrow.png")
+        self.left_arrow_list.append(self.left_arrow)
 
-        self.black_head = arcade.Sprite("Pictures/Characters/Black_head_for_sprite.png", scale=0.5)
-        self.black_head.center_x = width_user * 0.3
-        self.black_head.center_y = height_user * 0.7
-        black_head_list = arcade.SpriteList()
-        black_head_list.append(self.black_head)
-        self.heads_list.append(black_head_list)
-
-        self.yellow_head = arcade.Sprite("Pictures/Characters/Yellow_head_for_sprite.png", scale=0.5)
-        self.yellow_head.center_x = width_user * 0.3
-        self.yellow_head.center_y = height_user * 0.7
-        yellow_head_list = arcade.SpriteList()
-        yellow_head_list.append(self.yellow_head)
-        self.heads_list.append(yellow_head_list)
+        self.right_arrow_list = arcade.SpriteList()
+        self.right_arrow = arcade.Sprite("TrainingLevel/Testing_hero/Right_arrow.png")
+        self.right_arrow_list.append(self.right_arrow)
 
 
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
-        self.heads_list[self.current_head_index].draw()
         self.start_game_button_list.draw()
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
@@ -106,17 +87,6 @@ class NewGameWindowView(arcade.View):
             elif not self.fullscreen_flag:
                 self.window.set_fullscreen(True)
                 self.fullscreen_flag = True
-        elif key == arcade.key.RIGHT:
-            if self.current_head_index == len(self.heads_list) - 1:
-                self.current_head_index = 0
-            elif self.current_head_index < len(self.heads_list) - 1:
-                self.current_head_index += 1
-
-        elif key == arcade.key.LEFT:
-            if self.current_head_index == 0:
-                self.current_head_index = 3
-            elif self.current_head_index > 0:
-                self.current_head_index -= 1
 
         elif key == arcade.key.ESCAPE:
             self.window.show_view(self.starting_window_view)
