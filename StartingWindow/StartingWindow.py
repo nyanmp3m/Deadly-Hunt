@@ -11,7 +11,6 @@ from Sprites_classes.GhostSprite_class import GHOST
 from independentVariables.variables import Cursor_obj
 
 from View_classes.NewGameView_class import NewGameWindowView
-from View_classes.NewGameView_class import chosen_player
 
 width_user, height_user = arcade.get_display_size()
 images = ["background1.jpg", "background2.jpg"]

@@ -8,11 +8,11 @@ class FaceDirection(enum.Enum):
     RIGHT = 1
 
 
-class Egor(arcade.Sprite):
+class EgorB(arcade.Sprite):
     def __init__(self):
         super().__init__(
-            "TrainingLevel/Egor.png",
-            scale=0.1
+            "TrainingLevel/EgorB.png",
+            scale=0.18
         )
         self.jump_count = 0
         self.is_walking = False
@@ -27,10 +27,10 @@ class Egor(arcade.Sprite):
         self.face_direction = FaceDirection.RIGHT
 
         for i in range(1, 6):
-            texture = arcade.load_texture(f"TrainingLevel/walking{i}.png")
+            texture = arcade.load_texture(f"TrainingLevel/walkingB{i}.png")
             self.walking_animation.append(texture)
         for i in range(1, 4):
-            texture = arcade.load_texture(f"TrainingLevel/jump{i}.png")
+            texture = arcade.load_texture(f"TrainingLevel/jumpB{i}.png")
             self.jumping_animation.append(texture)
 
     def update(self, delta_time):

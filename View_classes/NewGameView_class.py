@@ -14,11 +14,11 @@ from Sprites_classes.Left_Arrow_Sprite_class import Left_Arrow_Sprite
 from Sprites_classes.Right_Arrow_Sprite_class import Right_Arrow_Sprite
 
 from Sprites_classes.Save_Hero_Button_Sprite_class import Save_Hero_Button_Sprite
+import View_classes.buffer as buffer_module
 
 
 width_user, height_user = arcade.get_display_size()
 
-chosen_player = "white"
 
 class NewGameWindowView(arcade.View):
     def __init__(self, window,starting_window):
@@ -74,6 +74,7 @@ class NewGameWindowView(arcade.View):
         self.black_player_list.draw()
         self.left_arrow_list.draw()
         self.right_arrow_list.draw()
+        self.save_hero_button_list.draw()
         arcade.draw_text("CHOOSE YOUR CHARACTER", width_user*0.5, height_user*0.8, arcade.color.BLACK, 35, font_name='Times New Roman')
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
@@ -120,9 +121,10 @@ class NewGameWindowView(arcade.View):
 
         if self.save_hero_button.collides_with_point((x, y)):
             if self.current_index == 0:
-                chosen_player = "white"
+                buffer_module.chosen_player = "white"
             elif self.current_index == 1:
-                chosen_player = "black"
+                buffer_module.chosen_player = "black"
+
 
 
         for sprite in start_button_hits:
