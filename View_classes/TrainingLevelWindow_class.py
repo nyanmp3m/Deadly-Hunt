@@ -4,6 +4,14 @@ from Sprites_classes.Player_Egor_class import Egor
 from View_classes.Dead_screenWindow_class import DeadScreen
 import View_classes.buffer as buffer_module
 from Sprites_classes.player_EgorB_class import EgorB
+from Sprites_classes.ControlPanelSprite_class import ControlPanel
+from independentVariables.variables import Cursor_obj
+from Sprites_classes.ExplosionSprite_class import Explosion
+from Sprites_classes.Gun_sprite_class import Gun
+from Sprites_classes.knif_sprite_class import Knife
+from Sprites_classes.Rope_sprite_class import Rope
+from Sprites_classes.Training_skeleton import Skeleton1
+from Sprites_classes.Dice_roll import DiceRoll
 
 
 SCREEN_TITLE = "Deadly Hunt"
@@ -26,13 +34,38 @@ class TrainingLevel(arcade.View):
         if buffer_module.chosen_player == "black":
             self.player = EgorB()
 
-
+        self.control_panel = ControlPanel()
+        self.control_panel_list = arcade.SpriteList()
+        self.control_panel_list.append(self.control_panel)
         self.player.center_y = self.height / 2
         self.player.center_x = (self.width / 2) * 0.01
         self.player_spawn_point_x = (self.width / 2) * 0.01
         self.player_spawn_point_y = self.height / 2
         self.player_spritelist = arcade.SpriteList()
         self.player_spritelist.append(self.player)
+        self.cursor_list = arcade.SpriteList()
+        self.cursor = Cursor_obj
+        self.cursor_list.append(self.cursor)
+        self.explosion_list = arcade.SpriteList()
+
+        self.skeleton1 = Skeleton1()
+        self.skeleton_list = arcade.SpriteList()
+        self.skeleton_list.append(self.skeleton1)
+        self.skeleton1.center_x = (self.width / 2) * 1.4
+        self.skeleton1.center_y = self.height / 2
+
+        self.rope = Rope()
+        self.rope_list = arcade.SpriteList()
+        self.rope_list.append(self.rope)
+
+        self.gun = Gun()
+        self.gun_list = arcade.SpriteList()
+        self.gun_list.append(self.gun)
+
+        self.knife = Knife()
+        self.knife_list = arcade.SpriteList()
+        self.knife_list.append(self.knife)
+
         self.background = arcade.load_texture("TrainingLevel/picture.jpg")
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
@@ -42,7 +75,7 @@ class TrainingLevel(arcade.View):
         self.batch = Batch()
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player, self.scene["collision"])
-
+        self.physics_engine1 = arcade.PhysicsEngineSimple(self.skeleton1, self.scene["collision"])
         self.world_camera = arcade.camera.Camera2D()
         self.gui_camera = arcade.camera.Camera2D()
 
@@ -64,24 +97,42 @@ class TrainingLevel(arcade.View):
         self.clear()
         arcade.draw_texture_rect(self.background,
                                  arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
+        self.control_panel_list.draw()
 
         self.camera_shake.update_camera()
         self.world_camera.use()
         self.scene.draw()
         self.player_spritelist.draw()
+        self.skeleton_list.draw()
         self.camera_shake.readjust_camera()
 
         self.gui_camera.use()
 
         self.batch.draw()
 
+        self.knife_list.draw()
+        self.rope_list.draw()
+        self.gun_list.draw()
+
+        self.explosion_list.draw()
+        self.cursor_list.draw()
+
     def on_update(self, delta_time):
+        finished_animation = []
+        for i in self.explosion_list:
+            i.update_animation(delta_time)
+            if i.finished:
+                finished_animation.append(i)
+
+        for i in finished_animation:
+            self.explosion_list.remove(i)
         if self.player.center_y <= -200:
             dead_screen = DeadScreen(self)
             self.window.show_view(dead_screen)
             self.player.center_y = self.player_spawn_point_y
             self.player.center_x = self.player_spawn_point_x
         self.player.change_y -= GRAVITY
+        self.skeleton1.change_y -= GRAVITY
 
         if self.player.center_y == self.height / 2 and self.player.center_x == (self.width / 2) * 0.01:
             self.how_to_move_text = arcade.Text("D-движение вправо, A-движение влево, W-прыжок, W+D или W+A-рывок",
@@ -111,6 +162,7 @@ class TrainingLevel(arcade.View):
         )
 
         self.physics_engine.update()
+        self.physics_engine1.update()
 
         check_x = self.player.center_x
         check_y = self.player.center_y - self.player.height / 2 - 5
@@ -125,6 +177,24 @@ class TrainingLevel(arcade.View):
         if self.player.is_jumping:
             for i in self.player_spritelist:
                 i.update_animation(delta_time)
+
+        if abs(self.player.center_x - self.skeleton1.center_x) < 50:
+            self.player.start_fight()
+            dice_roller = DiceRoll()
+            roll_result = dice_roller.D20()
+            if roll_result < 10:
+                self.skeleton1.attack_once()
+
+
+    def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
+        self.cursor_list[0].center_x = x
+        self.cursor_list[0].center_y = y
+
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        explosion = Explosion(x, y + 20)
+        self.explosion_list.append(explosion)
+
 
 
 
