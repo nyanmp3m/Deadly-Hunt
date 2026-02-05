@@ -52,6 +52,9 @@ class MainMenu(arcade.View):
 
         self.flag_mouse_on_start_button = False
 
+        self.music = arcade.load_sound("Soundtracks/Main_Menu_theme.mp3")
+        self.music.play(loop=True, volume=0.5)
+
     def setup(self):
         pass
 
