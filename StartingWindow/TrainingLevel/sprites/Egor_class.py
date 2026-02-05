@@ -7,7 +7,7 @@ class Egor(arcade.Sprite):
     def __init__(self):
         super().__init__()
         self.player = arcade.Sprite(
-            "TrainingLevel/Egor(White_Hero).png",
+            "TrainingLevel/Egor.png",
             scale=0.1)
         self.player.center_y = self.height / 2
         self.player.center_x = (self.width / 2) - 950

@@ -7,8 +7,18 @@ from independentVariables.variables import Cursor_obj
 from Sprites_classes.StartMainGameButtonSprite_class import StartMainGameButtonSprite
 from View_classes.ExplanatoryNoteWindow_class import ExplanatoryNote
 
+from Sprites_classes.White_Hero_Sprite_class import White_Hero_Sprite
+from Sprites_classes.Black_Hero_Sprite_class import Black_Hero_Sprite
+
+from Sprites_classes.Left_Arrow_Sprite_class import Left_Arrow_Sprite
+from Sprites_classes.Right_Arrow_Sprite_class import Right_Arrow_Sprite
+
+from Sprites_classes.Save_Hero_Button_Sprite_class import Save_Hero_Button_Sprite
+
+
 width_user, height_user = arcade.get_display_size()
 
+chosen_player = "white"
 
 class NewGameWindowView(arcade.View):
     def __init__(self, window,starting_window):
@@ -32,26 +42,39 @@ class NewGameWindowView(arcade.View):
         self.fullscreen_flag = True
 
         self.white_player_list = arcade.SpriteList()
-        self.white_player = arcade.Sprite("TrainingLevel/Testing_hero/Egor(White_Hero).png")
+        self.white_player = White_Hero_Sprite()
         self.white_player_list.append(self.white_player)
+        self.white_player.visible = True
 
         self.black_player_list = arcade.SpriteList()
-        self.black_player = arcade.Sprite("TrainingLevel/Testing_hero/Black_hero.png")
+        self.black_player = Black_Hero_Sprite()
         self.black_player_list.append(self.black_player)
+        self.black_player.visible = False
 
         self.left_arrow_list = arcade.SpriteList()
-        self.left_arrow = arcade.Sprite("TrainingLevel/Testing_hero/Left_arrow.png")
+        self.left_arrow = Left_Arrow_Sprite()
         self.left_arrow_list.append(self.left_arrow)
 
         self.right_arrow_list = arcade.SpriteList()
-        self.right_arrow = arcade.Sprite("TrainingLevel/Testing_hero/Right_arrow.png")
+        self.right_arrow = Right_Arrow_Sprite()
         self.right_arrow_list.append(self.right_arrow)
+
+        self.save_hero_button_list = arcade.SpriteList()
+        self.save_hero_button = Save_Hero_Button_Sprite()
+        self.save_hero_button_list.append(self.save_hero_button)
+
+        self.current_index = 0
 
 
     def on_draw(self):
         self.clear()
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.width // 2, self.height // 2, self.width, self.height))
         self.start_game_button_list.draw()
+        self.white_player_list.draw()
+        self.black_player_list.draw()
+        self.left_arrow_list.draw()
+        self.right_arrow_list.draw()
+        arcade.draw_text("CHOOSE YOUR CHARACTER", width_user*0.5, height_user*0.8, arcade.color.BLACK, 35, font_name='Times New Roman')
         self.explosion_animation_list.draw()
         self.cursor_list.draw()
 
@@ -74,6 +97,33 @@ class NewGameWindowView(arcade.View):
             explosion = Explosion(x, y + 20)
             self.explosion_animation_list.append(explosion)
         start_button_hits = arcade.get_sprites_at_point((x, y), self.start_game_button_list)
+
+        if self.left_arrow.collides_with_point((x, y)):
+            if self.current_index == 0:
+                self.black_player.visible = True
+                self.white_player.visible = False
+                self.current_index = 1
+            elif self.current_index == 1:
+                self.black_player.visible = False
+                self.white_player.visible = True
+                self.current_index = 0
+
+        if self.right_arrow.collides_with_point((x, y)):
+            if self.current_index == 0:
+                self.black_player.visible = True
+                self.white_player.visible = False
+                self.current_index = 1
+            elif self.current_index == 1:
+                self.black_player.visible = False
+                self.white_player.visible = True
+                self.current_index = 0
+
+        if self.save_hero_button.collides_with_point((x, y)):
+            if self.current_index == 0:
+                chosen_player = "white"
+            elif self.current_index == 1:
+                chosen_player = "black"
+
 
         for sprite in start_button_hits:
             note = ExplanatoryNote()

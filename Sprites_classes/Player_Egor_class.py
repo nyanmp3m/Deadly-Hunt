@@ -6,7 +6,7 @@ PLAYER_SPEED = 2.5
 class Egor(arcade.Sprite):
     def __init__(self):
         super().__init__(
-            "TrainingLevel/Egor(White_Hero).png",
+            "TrainingLevel/Egor.png",
             scale=0.1
         )
         self.jump_count = 0
