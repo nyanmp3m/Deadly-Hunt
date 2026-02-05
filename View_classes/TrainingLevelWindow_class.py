@@ -28,8 +28,8 @@ class TrainingLevel(arcade.View):
 
 
         self.player.center_y = self.height / 2
-        self.player.center_x = (self.width / 2) - 950
-        self.player_spawn_point_x = (self.width / 2) - 950
+        self.player.center_x = (self.width / 2) * 0.01
+        self.player_spawn_point_x = (self.width / 2) * 0.01
         self.player_spawn_point_y = self.height / 2
         self.player_spritelist = arcade.SpriteList()
         self.player_spritelist.append(self.player)
@@ -83,20 +83,20 @@ class TrainingLevel(arcade.View):
             self.player.center_x = self.player_spawn_point_x
         self.player.change_y -= GRAVITY
 
-        if self.player.center_y == self.height / 2 and self.player.center_x == (self.width / 2) - 950:
+        if self.player.center_y == self.height / 2 and self.player.center_x == (self.width / 2) * 0.01:
             self.how_to_move_text = arcade.Text("D-движение вправо, A-движение влево, W-прыжок, W+D или W+A-рывок",
-                                                self.window.width / 2, (self.window.height / 2) + 350,
+                                                self.window.width / 2, (self.window.height / 2) * 1.7,
                                                 arcade.color.BLACK, font_size=40, anchor_x="center", batch=self.batch)
 
-        if (abs(self.player.center_x - 635.0) < 10 and abs(self.player.center_y - 187.75) < 10):
+        if (abs(self.player.center_x -((self.width / 2) * 0.67))) < 15 and (abs(self.player.center_y-((self.height / 2) * 0.35))) < 15:
             self.how_to_move_text = None
-            self.game_is_saved = arcade.Text("игра сохранена",
-                                                self.window.width / 2, (self.window.height / 2) + 350,
+            self.game_is_saved = arcade.Text("точка возрождения задана",
+                                                self.window.width / 2, (self.window.height / 2) * 1.7,
                                                 arcade.color.BLACK, font_size=40, anchor_x="center", batch=self.batch)
-            self.player_spawn_point_x = 635.0
-            self.player_spawn_point_y = 187.75
-
-        if self.player.center_x > 660 or self.player.center_x < 630:
+            self.player_spawn_point_x = ((self.width / 2) * 0.67)
+            self.player_spawn_point_y = ((self.height / 2) * 0.35)
+        if (abs(self.player.center_x - ((self.width / 2) * 0.67))) > 15 and (
+        abs(self.player.center_y - ((self.height / 2) * 0.35))) > 15:
             self.game_is_saved = None
 
         self.camera_shake.update(delta_time)
