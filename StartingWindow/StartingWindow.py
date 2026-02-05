@@ -53,7 +53,7 @@ class MainMenu(arcade.View):
         self.flag_mouse_on_start_button = False
 
         self.music = arcade.load_sound("Soundtracks/Main_Menu_theme.mp3")
-        self.music.play(loop=True, volume=0.5)
+        self.music_player = self.music.play(loop=True, volume=0.5)
 
     def setup(self):
         pass
@@ -98,6 +98,10 @@ class MainMenu(arcade.View):
             if self.start_game_list[0].center_x > (width_user // 2) - (width_user // 2.5):
                 self.start_game_list[0].center_x -= 5
 
+    def on_show_view(self):
+        if self.music_player is None or not self.music_player.playing:
+            self.music_player = self.music.play(loop=True, volume=0.5)
+
     def on_mouse_motion(self, x, y, dx, dy):
         self.cursor_list[0].center_x = x
         self.cursor_list[0].center_y = y
@@ -127,6 +131,7 @@ class MainMenu(arcade.View):
 
         start_game_button_hits = arcade.get_sprites_at_point((x, y), self.start_game_list)
         if self.start_game_button.collides_with_point((x, y)):
+            arcade.stop_sound(self.music_player)
             new_game_menu = NewGameWindowView(self.window, self)
             self.window.show_view(new_game_menu)
 
