@@ -26,7 +26,7 @@ class Egor(arcade.Sprite):
         self.texture_change_delay = 0.1
         self.face_direction = FaceDirection.RIGHT
         self.hp = 30
-        self.kd = 5
+        self.kd = 10
         self.lov = 10
         self.dm = 5
         self.is_inFight = False

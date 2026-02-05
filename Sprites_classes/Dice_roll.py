@@ -9,3 +9,6 @@ class DiceRoll():
     def D6(self):
         result = random.randint(1, 6)
         return result
+    def D8(self):
+        result = random.randint(1, 8)
+        return result

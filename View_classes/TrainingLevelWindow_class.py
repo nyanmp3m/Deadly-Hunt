@@ -70,6 +70,9 @@ class TrainingLevel(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
+        self.turn = None
+        self.weapon = "gun"
+
 
         self.score = 0
         self.batch = Batch()
@@ -116,6 +119,17 @@ class TrainingLevel(arcade.View):
 
         self.explosion_list.draw()
         self.cursor_list.draw()
+        if self.in_combat:
+            hp_skeleton_text = f"HP келета: {self.skeleton1.hp}/25"
+            arcade.draw_text(hp_skeleton_text,
+                             self.width // 2, self.height*0.7,
+                             arcade.color.BLACK, 20,
+                             anchor_x="center")
+        hp_player_text = self.player.hp
+        arcade.draw_text(hp_player_text,
+                         (self.width // 2)*1.49, self.height * 0.11,
+                         arcade.color.BLACK, 20,
+                         anchor_x="center")
 
     def on_update(self, delta_time):
         finished_animation = []
@@ -134,20 +148,42 @@ class TrainingLevel(arcade.View):
         self.player.change_y -= GRAVITY
         self.skeleton1.change_y -= GRAVITY
 
-        if self.player.center_y == self.height / 2 and self.player.center_x == (self.width / 2) * 0.01:
-            self.how_to_move_text = arcade.Text("D-движение вправо, A-движение влево, W-прыжок, W+D или W+A-рывок",
-                                                self.window.width / 2, (self.window.height / 2) * 1.7,
-                                                arcade.color.BLACK, font_size=40, anchor_x="center", batch=self.batch)
+        self.window_center_x = self.window.width / 2
+        self.window_center_y = self.window.height / 2
 
-        if (abs(self.player.center_x -((self.width / 2) * 0.67))) < 15 and (abs(self.player.center_y-((self.height / 2) * 0.35))) < 15:
+        if (abs(self.player.center_y - self.window_center_y) < 10 and
+                abs(self.player.center_x - (self.window_center_x * 0.01)) < 10):
+            self.how_to_move_text = arcade.Text(
+                "D-движение вправо, A-движение влево, W-прыжок, W+D или W+A-рывок",
+                self.window_center_x,
+                self.window_center_y * 1.7,
+                arcade.color.BLACK,
+                font_size=int(40 * self.window.width / 1920),
+                anchor_x="center",
+                batch=self.batch
+            )
+
+        checkpoint_x = self.window_center_x * 0.67
+        checkpoint_y = self.window_center_y * 0.35
+        player_distance = ((self.player.center_x - checkpoint_x) ** 2 +
+                           (self.player.center_y - checkpoint_y) ** 2) ** 0.5
+
+        distance = 30 * (self.window.width / 1920)
+
+        if player_distance < distance:
             self.how_to_move_text = None
-            self.game_is_saved = arcade.Text("точка возрождения задана",
-                                                self.window.width / 2, (self.window.height / 2) * 1.7,
-                                                arcade.color.BLACK, font_size=40, anchor_x="center", batch=self.batch)
-            self.player_spawn_point_x = ((self.width / 2) * 0.67)
-            self.player_spawn_point_y = ((self.height / 2) * 0.35)
-        if (abs(self.player.center_x - ((self.width / 2) * 0.67))) > 15 and (
-        abs(self.player.center_y - ((self.height / 2) * 0.35))) > 15:
+            self.game_is_saved = arcade.Text(
+                "точка возрождения задана",
+                self.window_center_x,
+                self.window_center_y * 1.7,
+                arcade.color.BLACK,
+                font_size=int(40 * self.window.width / 1920),
+                anchor_x="center",
+                batch=self.batch
+            )
+            self.player_spawn_point_x = checkpoint_x
+            self.player_spawn_point_y = checkpoint_y
+        elif player_distance > distance * 1.5:
             self.game_is_saved = None
 
         self.camera_shake.update(delta_time)
@@ -177,21 +213,136 @@ class TrainingLevel(arcade.View):
         if self.player.is_jumping:
             for i in self.player_spritelist:
                 i.update_animation(delta_time)
+        if self.skeleton1.is_attacking:
+            for i in self.skeleton_list:
+                i.update_animation(delta_time)
 
-        if abs(self.player.center_x - self.skeleton1.center_x) < 50:
-            self.player.start_fight()
-            dice_roller = DiceRoll()
-            roll_result = dice_roller.D20()
-            if roll_result < 10:
-                self.skeleton1.attack_once()
+
+
+
+        if abs(self.player.center_x - self.skeleton1.center_x) < 50 and self.skeleton1.hp > 0:
+
+            if not self.in_combat:
+                self.in_combat = True
+                self.player.start_fight()
+
+
+                dice_roller = DiceRoll()
+                player_initiative = dice_roller.D20() + self.player.lov
+                skeleton1_initiative = dice_roller.D20() + self.skeleton1.lov
+
+                if player_initiative < skeleton1_initiative:
+                    self.turn = "sceleton"
+                else:
+                    self.turn = "player"
+
+            if self.in_combat and self.turn == "sceleton":
+                dice_roller = DiceRoll()
+                attack_roll = dice_roller.D20()
+
+
+                if attack_roll > 10:
+                    damage_roll = dice_roller.D6()
+                    total_damage = damage_roll + self.skeleton1.dm
+                    self.player.hp -= total_damage
+
+                else:
+                    self.attack_status = arcade.Text(
+                        "Скелет промахнулся",
+                        self.window_center_x,
+                        self.window_center_y * 1.7,
+                        arcade.color.BLACK,
+                        font_size=int(40 * self.window.width / 1920),
+                        anchor_x="center",
+                        batch=self.batch
+                    )
+
+                self.turn = "player"
+
+
+
+        elif abs(self.player.center_x - self.skeleton1.center_x) > 100:
+            self.in_combat = False
+
+
+        if self.player.hp <= 0 and self.player.is_inFight:
+            self.player.is_inFight = False
+            self.in_combat = False
+            self.player.hp = 30
+            self.skeleton1.hp = 25
+            dead_screen = DeadScreen(self)
+            self.window.show_view(dead_screen)
+            self.player.center_y = self.player_spawn_point_y
+            self.player.center_x = self.player_spawn_point_x
+
+
+        if self.skeleton1.hp <= 0 and self.in_combat:
+            for i in self.skeleton_list:
+                self.skeleton_list.remove(i)
+            self.in_combat = False
+            self.player.is_inFight = False
+
 
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         self.cursor_list[0].center_x = x
         self.cursor_list[0].center_y = y
+        Rope_sprite_hits = arcade.get_sprites_at_point((x, y), self.rope_list)
+        gun_sprite_hits = arcade.get_sprites_at_point((x, y), self.gun_list)
+        knife_sprite_hits = arcade.get_sprites_at_point((x, y), self.knife_list)
+
+        if Rope_sprite_hits:
+            self.weapon = "rope"
+        elif gun_sprite_hits:
+            self.weapon = "gun"
+        elif knife_sprite_hits:
+            self.weapon = "knife"
+
+    def player_attack(self):
+        dice_roller = DiceRoll()
+        attack_roll = dice_roller.D20()
+        if attack_roll > 3:
+            if self.weapon == "gun":
+                damage_roll = dice_roller.D8()
+                self.skeleton1.hp -= damage_roll + self.player.dm
+            if self.weapon == "knife":
+                damage_roll = dice_roller.D4()
+                self.skeleton1.hp -= damage_roll + self.player.dm
+            if self.weapon == "rope":
+                damage_roll = dice_roller.D6()
+                self.skeleton1.hp -= damage_roll + self.player.dm
+        else:
+            self.attack_status = arcade.Text(
+                "Ты промахнулся",
+                self.window_center_x,
+                self.window_center_y * 1.7,
+                arcade.color.BLACK,
+                font_size=int(40 * self.window.width / 1920),
+                anchor_x="center",
+                batch=self.batch
+            )
+            self.turn = "sceleton"
+        self.turn = "sceleton"
+
+
 
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        if self.turn == "player" and self.skeleton1.hp > 0:
+            # Проверяем нажатие на оружие
+            Rope_sprite_hits = arcade.get_sprites_at_point((x, y), self.rope_list)
+            gun_sprite_hits = arcade.get_sprites_at_point((x, y), self.gun_list)
+            knife_sprite_hits = arcade.get_sprites_at_point((x, y), self.knife_list)
+
+            if Rope_sprite_hits:
+                self.weapon = "rope"
+                self.player_attack()
+            elif gun_sprite_hits:
+                self.weapon = "gun"
+                self.player_attack()
+            elif knife_sprite_hits:
+                self.weapon = "knife"
+                self.player_attack()
         explosion = Explosion(x, y + 20)
         self.explosion_list.append(explosion)
 
