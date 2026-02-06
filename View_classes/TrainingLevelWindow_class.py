@@ -12,6 +12,10 @@ from Sprites_classes.knif_sprite_class import Knife
 from Sprites_classes.Rope_sprite_class import Rope
 from Sprites_classes.Training_skeleton import Skeleton1
 from Sprites_classes.Dice_roll import DiceRoll
+from View_classes.Learning_finished_window_class import Final
+from Sprites_classes.Gun_info import GunI
+from Sprites_classes.Rope_info import RopeI
+from Sprites_classes.Knife_info import KnifeI
 
 
 SCREEN_TITLE = "Deadly Hunt"
@@ -49,6 +53,7 @@ class TrainingLevel(arcade.View):
         self.explosion_list = arcade.SpriteList()
 
         self.skeleton1 = Skeleton1()
+        self.skeleton1.texture = self.skeleton1.texture.flip_horizontally()
         self.skeleton_list = arcade.SpriteList()
         self.skeleton_list.append(self.skeleton1)
         self.skeleton1.center_x = (self.width / 2) * 1.4
@@ -66,12 +71,31 @@ class TrainingLevel(arcade.View):
         self.knife_list = arcade.SpriteList()
         self.knife_list.append(self.knife)
 
+        self.k = KnifeI()
+        self.k_list = arcade.SpriteList()
+        self.k_list.append(self.k)
+
+        self.r = RopeI()
+        self.r_list = arcade.SpriteList()
+        self.r_list.append(self.r)
+
+        self.g = GunI()
+        self.g_list = arcade.SpriteList()
+        self.g_list.append(self.g)
+
         self.background = arcade.load_texture("TrainingLevel/picture.jpg")
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         self.turn = None
         self.weapon = "gun"
+        self.learning = False
+        self.k_show = False
+        self.g_show = False
+        self.r_show = False
+
+        self.music = arcade.load_sound("Soundtracks/music.mp3")
+        self.music_player = self.music.play(loop=True, volume=0.5)
 
 
         self.score = 0
@@ -119,8 +143,14 @@ class TrainingLevel(arcade.View):
 
         self.explosion_list.draw()
         self.cursor_list.draw()
+        if self.k_show:
+            self.k_list.draw()
+        if self.g_show:
+            self.g_list.draw()
+        if self.r_show:
+            self.r_list.draw()
         if self.in_combat:
-            hp_skeleton_text = f"HP келета: {self.skeleton1.hp}/25"
+            hp_skeleton_text = f"HP келета: {self.skeleton1.hp}/35"
             arcade.draw_text(hp_skeleton_text,
                              self.width // 2, self.height*0.7,
                              arcade.color.BLACK, 20,
@@ -130,6 +160,19 @@ class TrainingLevel(arcade.View):
                          (self.width // 2)*1.49, self.height * 0.11,
                          arcade.color.BLACK, 20,
                          anchor_x="center")
+        om_player_text = self.player.om
+        arcade.draw_text(om_player_text,
+                         (self.width // 2) * 1.49, self.height * 0.14,
+                         arcade.color.BLACK, 20,
+                         anchor_x="center"
+                         )
+        coin_player_text = self.player.coin
+        arcade.draw_text(coin_player_text,
+                         (self.width // 2) * 1.49, self.height * 0.06,
+                         arcade.color.BLACK, 20,
+                         anchor_x="center"
+                         )
+
 
     def on_update(self, delta_time):
         finished_animation = []
@@ -145,6 +188,11 @@ class TrainingLevel(arcade.View):
             self.window.show_view(dead_screen)
             self.player.center_y = self.player_spawn_point_y
             self.player.center_x = self.player_spawn_point_x
+            buffer_module.died += 1
+            if self.learning:
+                final_screen = Final(self)
+                self.window.show_view(final_screen)
+
         self.player.change_y -= GRAVITY
         self.skeleton1.change_y -= GRAVITY
 
@@ -221,6 +269,7 @@ class TrainingLevel(arcade.View):
 
 
         if abs(self.player.center_x - self.skeleton1.center_x) < 50 and self.skeleton1.hp > 0:
+            self.how_to_move_text = None
 
             if not self.in_combat:
                 self.in_combat = True
@@ -270,10 +319,12 @@ class TrainingLevel(arcade.View):
             self.in_combat = False
             self.player.hp = 30
             self.skeleton1.hp = 25
+            self.player.om = 4
             dead_screen = DeadScreen(self)
             self.window.show_view(dead_screen)
             self.player.center_y = self.player_spawn_point_y
             self.player.center_x = self.player_spawn_point_x
+            buffer_module.died += 1
 
 
         if self.skeleton1.hp <= 0 and self.in_combat:
@@ -281,6 +332,18 @@ class TrainingLevel(arcade.View):
                 self.skeleton_list.remove(i)
             self.in_combat = False
             self.player.is_inFight = False
+            self.attack_status = None
+            self.learning = True
+            self.player.coin += 30
+            self.resut = arcade.Text(
+                "А теперь спрыгните",
+                self.window_center_x,
+                self.window_center_y * 1.7,
+                arcade.color.BLACK,
+                font_size=int(40 * self.window.width / 1920),
+                anchor_x="center",
+                batch=self.batch
+            )
 
 
 
@@ -293,24 +356,59 @@ class TrainingLevel(arcade.View):
 
         if Rope_sprite_hits:
             self.weapon = "rope"
+            self.r_show = True
         elif gun_sprite_hits:
             self.weapon = "gun"
+            self.g_show = True
         elif knife_sprite_hits:
             self.weapon = "knife"
+            self.k_show = True
+        else:
+            self.r_show = False
+            self.g_show = False
+            self.k_show = False
 
     def player_attack(self):
         dice_roller = DiceRoll()
         attack_roll = dice_roller.D20()
+        self.attack_status = None
         if attack_roll > 3:
-            if self.weapon == "gun":
+            if self.weapon == "gun" and self.player.om >= 1:
                 damage_roll = dice_roller.D8()
                 self.skeleton1.hp -= damage_roll + self.player.dm
+                self.player.om -= 1
             if self.weapon == "knife":
+                luck_roll = dice_roller.D20()
                 damage_roll = dice_roller.D4()
                 self.skeleton1.hp -= damage_roll + self.player.dm
-            if self.weapon == "rope":
+                if luck_roll == 20:
+                    self.skeleton1.dm -= 2
+                    self.attack_status = arcade.Text(
+                        "Скелет получает помеху при атаке",
+                        self.window_center_x,
+                        self.window_center_y * 1.7,
+                        arcade.color.BLACK,
+                        font_size=int(40 * self.window.width / 1920),
+                        anchor_x="center",
+                        batch=self.batch
+                    )
+            if self.weapon == "rope" and self.player.om >= 2:
                 damage_roll = dice_roller.D6()
+                luck_roll = dice_roller.D20()
                 self.skeleton1.hp -= damage_roll + self.player.dm
+                self.player.om -= 2
+                if luck_roll > 10:
+                    self.turn = "player"
+                    self.attack_status = arcade.Text(
+                        "Скелет обездвижен",
+                        self.window_center_x,
+                        self.window_center_y * 1.7,
+                        arcade.color.BLACK,
+                        font_size=int(40 * self.window.width / 1920),
+                        anchor_x="center",
+                        batch=self.batch
+                    )
+
         else:
             self.attack_status = arcade.Text(
                 "Ты промахнулся",
@@ -329,7 +427,6 @@ class TrainingLevel(arcade.View):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if self.turn == "player" and self.skeleton1.hp > 0:
-            # Проверяем нажатие на оружие
             Rope_sprite_hits = arcade.get_sprites_at_point((x, y), self.rope_list)
             gun_sprite_hits = arcade.get_sprites_at_point((x, y), self.gun_list)
             knife_sprite_hits = arcade.get_sprites_at_point((x, y), self.knife_list)

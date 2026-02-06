@@ -29,6 +29,8 @@ class Egor(arcade.Sprite):
         self.kd = 10
         self.lov = 10
         self.dm = 5
+        self.om = 6
+        self.coin = 0
         self.is_inFight = False
 
         for i in range(1, 6):

@@ -21,7 +21,7 @@ class Skeleton1(arcade.Sprite):
         self.current_texture1 = 0
         self.texture_change_time1 = 0
         self.texture_change_delay = 0.1
-        self.hp = 25
+        self.hp = 35
         self.kd = 3
         self.lov = 10
         self.dm = 7
