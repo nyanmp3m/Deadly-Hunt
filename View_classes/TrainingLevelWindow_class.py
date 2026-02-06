@@ -319,7 +319,7 @@ class TrainingLevel(arcade.View):
             self.in_combat = False
             self.player.hp = 30
             self.skeleton1.hp = 25
-            self.player.om = 4
+            self.player.om = 6
             dead_screen = DeadScreen(self)
             self.window.show_view(dead_screen)
             self.player.center_y = self.player_spawn_point_y

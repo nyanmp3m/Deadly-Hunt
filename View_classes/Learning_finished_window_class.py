@@ -9,7 +9,7 @@ class Final(arcade.View):
         self.batch = Batch()
         self.fullscreen_flag = False
         self.main_view = main_view
-        if buffer_module.died <= 1:
+        if buffer_module.died <= 2:
             self.final_text = arcade.Text("Вы закончили обучение с красным аттестатом", self.window.width / 2,
                                           self.window.height / 2,
                                           arcade.color.WHITE, font_size=40, anchor_x="center", batch=self.batch)
@@ -17,7 +17,7 @@ class Final(arcade.View):
             self.final_text = arcade.Text("Вы закончили обучение с аттестатом", self.window.width / 2,
                                           self.window.height / 2,
                                           arcade.color.WHITE, font_size=40, anchor_x="center", batch=self.batch)
-        if buffer_module.died > 4:
+        if buffer_module.died >= 4:
             self.final_text = arcade.Text("Вы закончили обучение со справкой", self.window.width / 2,
                                           self.window.height / 2,
                                           arcade.color.WHITE, font_size=40, anchor_x="center", batch=self.batch)
